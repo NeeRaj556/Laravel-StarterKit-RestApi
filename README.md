@@ -1,11 +1,10 @@
 # Laravel Starter Kit - Authentication and CRUD Repository
 
-A ready-to-use Laravel starter kit featuring authentication,and a base CRUD repository. This package is designed to save time and effort by providing a robust foundation for any Laravel-based API application.
+A ready-to-use Laravel starter kit featuring authentication, and a base CRUD repository. This package is designed to save time and effort by providing a robust foundation for any Laravel-based API application.
 
 ---
 
 ## Features
-
 
 ### **Authentication**
 - JWT-based authentication for secure API token management.
@@ -15,18 +14,26 @@ A ready-to-use Laravel starter kit featuring authentication,and a base CRUD repo
 
 ### **Image Uploads**
 - Handles image uploads and storage with automatic naming and folder organization.
-- Supports image uploads for all CRUD features.
+- Supports image uploads for all CRUD features, with files saved according to the model ID.
 
 ### **API Ready**
 - Pre-configured routes and controller logic to quickly set up API endpoints.
+
+### **Flexible Parameters**
+- No need to send empty arrays (e.g., `[]`) for parameters unless required.
+- Middleware adjusts functionality based on the presence of data in the parameters.
 
 ---
 
 ## Installation
 
-### 1. Clone the Repository
+### 1. Clone the Repository(Https)
 ```bash
-git clone https://github.com/your-repository-url/laravel-starter-kit.git
+git clone https://github.com/NeeRaj556/Laravel-StarterKit-RestApi.git
+```
+## SSH
+```bash
+git clone git@github.com:NeeRaj556/Laravel-StarterKit-RestApi.git
 ```
 
 ### 2. Install Dependencies
@@ -41,6 +48,7 @@ composer install
 ```bash
 cp .env.example .env
 php artisan key:generate
+php artisan jwt:secret
 ```
 
 ### 4. Run Migrations
@@ -65,6 +73,7 @@ php artisan serve
 ### **Controllers**
 - Example `ProductController` is provided with full CRUD functionality.
 - Extend the `CrudRepository` to add logic for other models.
+- Ensure the image folder is updated dynamically using the `$folder` variable based on model requirements.
 
 ### **Routes**
 Pre-configured routes for authentication and product management:
@@ -74,6 +83,11 @@ Pre-configured routes for authentication and product management:
 Route::apiResource('products', ProductController::class);
 ```
 
+To update a product using a PUT request:
+```bash
+localhost:8000/api/products/1?_method=PUT
+```
+
 ### **Requests**
 Custom request classes for validation:
 - `StoreProductRequest`
@@ -81,6 +95,7 @@ Custom request classes for validation:
 
 ### **Environment Variables**
 - Set pagination count with `PAGINATE` in `.env`.
+- Modify as per your requirements.
 
 ---
 
@@ -102,8 +117,21 @@ app/
 
 ---
 
+## Image Handling
+- Images are stored in folders named according to the model ID.
+- To allow for multiple images, use the `$file` array to specify fields for the images.
+- Dynamically change the `$folder` variable for different models.
+
+---
+
 ## Contributing
-Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to submit a pull request or open an issue.
+
+### **Bug Fixes and Updates**
+- Identify and fix bugs, then push changes to the `bug` branch for review.
+- Collaboration is encouraged! Your contributions are a big help in improving the project.
+
+### **Future Features**
+- Role and permission-based access control is in progress and will be updated soon.
 
 ---
 
@@ -113,11 +141,12 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 ## Author
-[Your Name](https://github.com/your-github-username)
+Niraj Bajagain (https://github.com/NeeRaj556)
 
 ---
 
 ## Future Improvements
 - Support for more complex query filters.
-- Additional role and permission .
+- Role and permission-based access.
 - Additional pre-built components for common use cases.
+

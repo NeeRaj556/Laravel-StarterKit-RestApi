@@ -36,10 +36,10 @@ class CrudRepository extends BaseRepository implements CrudRepositoryInterface
       $this->storeImagesWithNames($request, $folder, $files, $createdModel->id,);
       return $createdModel;
    }
-   public function update(Model $model, array $data, $id, $request = [],  $folder = null, $files = [], array  $modified_values = [],  $hashing_values = null,  array $where = [], array $whereNot = [], array $search = [], $active = null, $verify = null)
+   public function update(Model $model, array $data, $id, $request = [],  $folder = null, $files = [], $modified_values = [],  $hashing_values = [],  array $where = [], array $whereNot = [], array $search = [], $active = null, $verify = null)
    {
 
-      $data = $this->updateDatas($data,  $modified_values = null,  $hashing_values = null);
+      $data = $this->updateDatas($data,  $modified_values,  $hashing_values);
       $query = $model->whereId($id);
       $query = $this->whereWhereNotSearch($query, $where, $whereNot, $search);
       $query = $this->active($query, $active);

@@ -4,21 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Interfaces\CrudRepositoryInterface;
 use App\Models\Product;
 use App\Repositories\CrudRepository;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    protected $repository;
+    protected $interface;
     protected $model;
     protected $files = ['image1', 'image2'];
 
     protected $folder = 'products';
 
-    public function __construct(CrudRepository $repository, Product $model)
+    public function __construct(CrudRepositoryInterface $interface, Product $model)
     {
-        $this->repository = $repository;
+        $this->interface = $interface;
         $this->model = $model;
     }
 
@@ -31,7 +32,7 @@ class ProductController extends Controller
         $active = $request->has('active') ? $request->get('active') : false;
         $verify = $request->has('verify') ? $request->get('verify') : false;
         $paginated = $request->get('paginated', true); // Default to paginated results
-        $products = $this->repository->index($this->model, $paginated, $this->folder, $this->files,  $where, $whereNot, $search, $active, $verify);
+        $products =  $this->interface->index($this->model, $paginated, $this->folder, $this->files,  $where, $whereNot, $search, $active, $verify);
         return response()->json($products, 200);
     }
 
@@ -43,7 +44,7 @@ class ProductController extends Controller
         $search = $request->has('search') ? $request->get('search')->toArray() : [];
         $active = $request->has('active') ? $request->get('active')->toArray() : [];
         $verify = $request->has('verify') ? $request->get('verify')->toArray() : [];
-        $product = $this->repository->getById($this->model, $id, $this->folder, $this->files, $where, $whereNot, $search, $active, $verify);
+        $product =  $this->interface->getById($this->model, $id, $this->folder, $this->files, $where, $whereNot, $search, $active, $verify);
         return response()->json($product, 200);
     }
 
@@ -55,7 +56,7 @@ class ProductController extends Controller
 
         $modifiedValues = ['price' => (float) $data['price']]; // Example modification
         $hashingValues = []; // Example: keys to hash (none in this case) not need to include 
-        $product = $this->repository->store($this->model, $data, $request, $this->folder, $this->files, [], $modifiedValues, $hashingValues);
+        $product =  $this->interface->store($this->model, $data, $request, $this->folder, $this->files, [], $modifiedValues, $hashingValues);
         return response()->json($product, 201);
     }
 
@@ -66,7 +67,7 @@ class ProductController extends Controller
         $modifiedValues = ['price' => (float) $data['price']]; // Example modification
         $hashingValues = []; // Example: keys to hash (none in this case)
 
-        $updated = $this->repository->update(
+        $updated =  $this->interface->update(
             $this->model,
             $data,
             $id,
@@ -86,7 +87,7 @@ class ProductController extends Controller
     public function destroy(Request $request, $id)
     {
 
-        $this->repository->delete($this->model, $this->folder, $id);
+        $this->interface->delete($this->model, $this->folder, $id);
         return response()->json(['message' => 'Product deleted successfully'], 200);
     }
 }
