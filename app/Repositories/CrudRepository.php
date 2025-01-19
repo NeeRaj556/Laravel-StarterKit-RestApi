@@ -45,7 +45,7 @@ class CrudRepository extends BaseRepository implements CrudRepositoryInterface
       $query = $this->active($query, $active);
       $query = $this->verified($query, $verify);
       $data = $this->storeImagesWithNames($request, $folder, $files = [], $id);
-      dd($data);
+
       return $query->update($data);
    }
 
