@@ -1,5 +1,5 @@
 # Laravel-StarterKit-RestApi
-A ready-to-use Laravel starter kit for REST API development. Includes roles and permissions management, API authentication (Sanctum/Passport), and a base CRUD repository to reduce redundancy. Scalable, secure, and developer-friendly—kickstart your API project with ease
+A Laravel starter kit for REST APIs with JWT authentication, role & permission management, and a base CRUD repository to minimize redundancy. Developer-friendly, scalable, and API-ready—quickly build secure APIs with minimal configuration and focus on your app's core logic. 
 
 Features:
 
@@ -7,7 +7,7 @@ Features:
         Pre-built roles and permissions system using Laravel's authorization features.
 
     Authentication Setup
-        Complete authentication setup with Laravel Sanctum or Passport for API token management.
+        Complete authentication setup with Laravel Sanctum && JWT authentication.
 
     Base CRUD Repository
         Centralized CRUD repository pattern to reduce code redundancy and improve maintainability.
