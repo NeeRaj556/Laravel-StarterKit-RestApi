@@ -82,35 +82,39 @@ class  BaseRepository
 
       return json_encode($storedImages); // Return JSON-encoded paths
    }
-   public function storeImagesWithNames($data, string $folder, $files, int $id)
+   public function storeImagesWithNames($data, string $folder, $files, int $id, $oldImages = [])
    {
-
       // Remove old images if provided
-      $this->deleteImages($files, $folder, $id);
+      $this->deleteImages($files, $folder, $id, $oldImages);
+      $storedImages = $data;
 
-      $storedImages = [];
-      $folderPath = $folder . '/' . $id; // Create folder path with id
+      $folderPath = $folder . DIRECTORY_SEPARATOR . $id; // Create folder path with id
       if ($files != [])
 
          foreach ($files as $file) {
-            if ($data->hasFile($file)) {
-               $storedImages[$file] = $data[$file]->store($folderPath, 'public');
+            if (isset($data[$file]) && $data[$file] instanceof \Illuminate\Http\UploadedFile) {
+               $filename = now()->format('Ymd') . '_' . \Illuminate\Support\Str::random(4) . '.' . $data[$file]->getClientOriginalExtension();
+               $data[$file]->storeAs($folderPath, $filename, 'public');
+               $storedImages[$file] = $filename;
+            } else {
+               $storedImages[$file] = null;
             }
-
-            return json_encode($storedImages);
          }
-      return $data;
+
+      return $storedImages;
       // Return JSON-encoded paths with names
    }
-   public function deleteImages($images, string $folder, int $id): void
+   public function deleteImages($images, string $folder, int $id, array $oldImages): void
    {
-      if (!isset($images) || !is_array($images)) {
+
+      if (!isset($oldImages) || !is_array($images)) {
          return; // Return if no images are provided or invalid
       }
 
-      $folderPath = $folder . '/' . $id; // Create folder path with id
-      foreach ($images as $imagePath) {
-         $fullPath = $folderPath . '/' . $imagePath;
+      foreach ($oldImages as $key => $imagePath) {
+         $fullPath = $imagePath;
+
+         $fullPath = $folder . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . $imagePath;
          if (Storage::disk('public')->exists($fullPath)) {
             Storage::disk('public')->delete($fullPath); // Delete the image from storage
          }
@@ -118,14 +122,14 @@ class  BaseRepository
    }
    public function deleteFolderById(string $folder, int $id): void
    {
-      $folderPath = $folder . '/' . $id; // Create folder path with id
+      $folderPath = $folder . DIRECTORY_SEPARATOR . $id; // Create folder path with id
       if (Storage::disk('public')->exists($folderPath)) {
          Storage::disk('public')->deleteDirectory($folderPath); // Delete the folder from storage
       }
    }
-   public function updateDatas(array &$data, array $modified_values = null, array $hashing_values = null): array
+   public function updateDatas(array $data, array $modified_values, array $hashing_values): array
    {
-      if ($modified_values != null) {
+      if ($modified_values != null && $modified_values != []) {
          foreach ($modified_values as $key => $value) {
             $data[$key] = $value;
          }
@@ -136,5 +140,20 @@ class  BaseRepository
          }
       }
       return $data;
+   }
+
+   public function FilePath($folder, $id, $file)
+   {
+      return Storage::url($folder . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . $file);
+   }
+   public function ShowFileURl($files, $folder, $id, $query)
+   {
+
+      if (!empty($files) && !empty($folder)) {
+         foreach ($files as $key) {
+            $query[$key] = $query[$key] == null ? null : $this->FilePath($folder, $id, $query[$key] ?? null);
+         }
+      }
+      return $query;
    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Classes\ApiResponseClass;
 use App\Interfaces\CrudRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,18 @@ class CrudRepository extends BaseRepository implements CrudRepositoryInterface
       $query = $this->active($query, $active);
       $query = $this->verified($query, $verify);
 
-      return $paginated ? $query->paginate(env('PAGINATE')) : $query->get();
+      $result = $paginated ? $query->paginate(env('PAGINATE')) : $query->get();
+
+      if (!empty($files) && !empty($folder)) {
+         $result->map(function ($item) use ($files, $folder) {
+            foreach ($files as $key) {
+               $item[$key] = $item[$key] == null ? null : $this->FilePath($folder, $item['id'], $item[$key]);
+            }
+            return $item;
+         });
+      }
+
+      return $result;
    }
 
    public function getById(Model $model, $id, $folder = null, $files = null, $where = [], $whereNot = [], $search = [], $active = null, $verify = null)
@@ -24,29 +36,35 @@ class CrudRepository extends BaseRepository implements CrudRepositoryInterface
       $query = $this->whereWhereNotSearch($query, $where, $whereNot, $search);
       $query = $this->active($query, $active);
       $query = $this->verified($query, $verify);
+      $query = $this->ShowFileURl($files, $folder, $id, $query);
 
       return $query;
    }
 
-   public function store(Model $model,  $data, $request,  $folder = null, $files = [], array $images = [], $modified_values = [], $hashing_values = [])
+   public function store(Model $model, $data, $request, $folder = null, $files = [], array $modified_values = [], array $hashing_values = [])
    {
-      $data = $this->updateDatas($data,  $modified_values = null,  $hashing_values = null);
+      $data = $this->updateDatas($data,  $modified_values,  $hashing_values);
       $createdModel = $model->create($data);
+      $id = $createdModel->id;
+      $data = $this->storeImagesWithNames($data, $folder, $files, $id);
+      $createdModel = $createdModel->update($data);
+      $data = $this->ShowFileURl($files, $folder, $id, $data);
 
-      $this->storeImagesWithNames($request, $folder, $files, $createdModel->id,);
-      return $createdModel;
+      return ApiResponseClass::sendResponse($data,  message: 'Created successfully', code: 200);
    }
-   public function update(Model $model, array $data, $id, $request = [],  $folder = null, $files = [], $modified_values = [],  $hashing_values = [],  array $where = [], array $whereNot = [], array $search = [], $active = null, $verify = null)
+   public function update(Model $model, array $data, $id, $request = null,  $folder = null, $files = [], $modified_values = [],  $hashing_values = [],  array $where = [], array $whereNot = [], array $search = [], $active = null, $verify = null)
    {
-
       $data = $this->updateDatas($data,  $modified_values,  $hashing_values);
       $query = $model->whereId($id);
+      $oldImages = $query->first()->only($files);
+
       $query = $this->whereWhereNotSearch($query, $where, $whereNot, $search);
       $query = $this->active($query, $active);
       $query = $this->verified($query, $verify);
-      $data = $this->storeImagesWithNames($request, $folder, $files = [], $id);
-
-      return $query->update($data);
+      $data = $this->storeImagesWithNames($data, $folder, $files, $id, $oldImages);
+      $query->update($data);
+      $data = $this->ShowFileURl($files, $folder, $id, $data);
+      return ApiResponseClass::sendResponse($data,  message: 'Updated successfully', code: 200);
    }
 
    public function delete(Model $model, $folder,  $id = null, array $where = [], array $whereNot = [], array $search = [], $active = null, $verify = null)

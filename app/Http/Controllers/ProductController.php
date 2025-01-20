@@ -55,8 +55,10 @@ class ProductController extends Controller
         $data = $request->validated();
 
         $modifiedValues = ['price' => (float) $data['price']]; // Example modification
-        $hashingValues = []; // Example: keys to hash (none in this case) not need to include 
-        $product =  $this->interface->store($this->model, $data, $request, $this->folder, $this->files, [], $modifiedValues, $hashingValues);
+        $hashingValues = [];
+
+        // Example: keys to hash (none in this case) not need to include 
+        $product =  $this->interface->store($this->model, $data, $request, $this->folder, $this->files,  $modifiedValues, $hashingValues);
         return response()->json($product, 201);
     }
 
@@ -74,9 +76,9 @@ class ProductController extends Controller
             $request, // Where conditions
             $this->folder,
             $this->files, // WhereNot conditions
-            [], // Search
             $modifiedValues,
             $hashingValues,
+            // Search
 
         );
 
@@ -90,4 +92,5 @@ class ProductController extends Controller
         $this->interface->delete($this->model, $this->folder, $id);
         return response()->json(['message' => 'Product deleted successfully'], 200);
     }
+    
 }
