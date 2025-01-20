@@ -7,43 +7,53 @@ A ready-to-use Laravel starter kit featuring authentication, and a base CRUD rep
 ## Features
 
 ### **Authentication**
-- JWT-based authentication for secure API token management.
+
+-   JWT-based authentication for secure API token management.
 
 ### **Base CRUD Repository**
-- Centralized CRUD repository pattern to minimize code redundancy and enhance maintainability.
+
+-   Centralized CRUD repository pattern to minimize code redundancy and enhance maintainability.
 
 ### **Image Uploads**
-- Handles image uploads and storage with automatic naming and folder organization.
-- Supports image uploads for all CRUD features, with files saved according to the model ID.
+
+-   Handles image uploads and storage with automatic naming and folder organization.
+-   Supports image uploads for all CRUD features, with files saved according to the model ID.
 
 ### **API Ready**
-- Pre-configured routes and controller logic to quickly set up API endpoints.
+
+-   Pre-configured routes and controller logic to quickly set up API endpoints.
 
 ### **Flexible Parameters**
-- No need to send empty arrays (e.g., `[]`) for parameters unless required.
-- Middleware adjusts functionality based on the presence of data in the parameters.
+
+-   No need to send empty arrays (e.g., `[]`) for parameters unless required.
+-   Middleware adjusts functionality based on the presence of data in the parameters.
 
 ---
 
 ## Installation
 
 ### 1. Clone the Repository(Https)
+
 ```bash
 git clone https://github.com/NeeRaj556/Laravel-StarterKit-RestApi.git
 ```
+
 ## SSH
+
 ```bash
 git clone git@github.com:NeeRaj556/Laravel-StarterKit-RestApi.git
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 composer install
 ```
 
 ### 3. Configure Environment
-- Copy `.env.example` to `.env`
-- Update database credentials and other environment variables in `.env`.
+
+-   Copy `.env.example` to `.env`
+-   Update database credentials and other environment variables in `.env`.
 
 ```bash
 cp .env.example .env
@@ -52,16 +62,25 @@ php artisan jwt:secret
 ```
 
 ### 4. Run Migrations
+
 ```bash
 php artisan migrate
 ```
 
 ### 5. Seed Database (Optional)
+
 ```bash
 php artisan db:seed
 ```
 
-### 6. Serve the Application
+### 6 Storage Symlink Command
+
+```bash
+php artisan storage:link
+```
+
+### 7. Serve the Application
+
 ```bash
 php artisan serve
 ```
@@ -71,11 +90,13 @@ php artisan serve
 ## Usage
 
 ### **Controllers**
-- Example `ProductController` is provided with full CRUD functionality.
-- Extend the `CrudRepository` to add logic for other models.
-- Ensure the image folder is updated dynamically using the `$folder` variable based on model requirements.
+
+-   Example `ProductController` is provided with full CRUD functionality.
+-   Extend the `CrudRepository` to add logic for other models.
+-   Ensure the image folder is updated dynamically using the `$folder` variable based on model requirements.
 
 ### **Routes**
+
 Pre-configured routes for authentication and product management:
 
 ```php
@@ -84,22 +105,27 @@ Route::apiResource('products', ProductController::class);
 ```
 
 To update a product using a PUT request:
+
 ```bash
 localhost:8000/api/products/1?_method=PUT
 ```
 
 ### **Requests**
+
 Custom request classes for validation:
-- `StoreProductRequest`
-- `UpdateProductRequest`
+
+-   `StoreProductRequest`
+-   `UpdateProductRequest`
 
 ### **Environment Variables**
-- Set pagination count with `PAGINATE` in `.env`.
-- Modify as per your requirements.
+
+-   Set pagination count with `PAGINATE` in `.env`.
+-   Modify as per your requirements.
 
 ---
 
 ## Folder Structure
+
 ```
 app/
 ├── Http/
@@ -118,35 +144,40 @@ app/
 ---
 
 ## Image Handling
-- Images are stored in folders named according to the model ID.
-- To allow for multiple images, use the `$file` array to specify fields for the images.
-- Dynamically change the `$folder` variable for different models.
+
+-   Images are stored in folders named according to the model ID.
+-   To allow for multiple images, use the `$file` array to specify fields for the images.
+-   Dynamically change the `$folder` variable for different models.
 
 ---
 
 ## Contributing
 
 ### **Bug Fixes and Updates**
-- Identify and fix bugs, then push changes to the `bug` branch for review.
-- Collaboration is encouraged! Your contributions are a big help in improving the project.
+
+-   Identify and fix bugs, then push changes to the `bug` branch for review.
+-   Collaboration is encouraged! Your contributions are a big help in improving the project.
 
 ### **Future Features**
-- Role and permission-based access control is in progress and will be updated soon.
+
+-   Role and permission-based access control is in progress and will be updated soon.
 
 ---
 
 ## License
+
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
 ## Author
+
 Niraj Bajagain (https://github.com/NeeRaj556)
 
 ---
 
 ## Future Improvements
-- Support for more complex query filters.
-- Role and permission-based access.
-- Additional pre-built components for common use cases.
 
+-   Support for more complex query filters.
+-   Role and permission-based access.
+-   Additional pre-built components for common use cases.
