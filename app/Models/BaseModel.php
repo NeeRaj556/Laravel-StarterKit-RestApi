@@ -19,5 +19,6 @@ class BaseModel extends Model
     {
         return $query->where('verified', 1);
     }
+
     
 }
