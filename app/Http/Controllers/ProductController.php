@@ -42,8 +42,8 @@ class ProductController extends Controller
         $where = $request->has('where') ? $request->get('where')->toArray() : [];
         $whereNot = $request->has('whereNot') ? $request->get('whereNot')->toArray() : [];
         $search = $request->has('search') ? $request->get('search')->toArray() : [];
-        $active = $request->has('active') ? $request->get('active')->toArray() : [];
-        $verify = $request->has('verify') ? $request->get('verify')->toArray() : [];
+        $active = $request->has('active') ? $request->get('active')->toArray() :null;
+        $verify = $request->has('verify') ? $request->get('verify')->toArray() : null;
         $product =  $this->interface->getById($this->model, $id, $this->folder, $this->files, $where, $whereNot, $search, $active, $verify);
         return response()->json($product, 200);
     }
