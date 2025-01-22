@@ -38,6 +38,7 @@ A ready-to-use Laravel starter kit featuring authentication and a base CRUD repo
 git clone https://github.com/NeeRaj556/Laravel-StarterKit-RestApi.git
 ```
 
+ 
 ### SSH
 
 ```bash
@@ -74,6 +75,7 @@ php artisan db:seed
 ```
 
 ### 6. Storage Symlink Command
+
 
 ```bash
 php artisan storage:link
@@ -161,14 +163,17 @@ app/
 -   For fixes, use branch names like `fix-issue-description`.
 
 We welcome collaboration and are excited to work with you to expand this project further!
+ 
 
 ### **Future Features**
 
 -   Role and permission-based access control is in progress and will be updated soon.
+
 -   Improved relational data management, including:
     -   Nested CRUD operations for related models.
     -   Automated handling of pivot tables for many-to-many relationships.
     -   Default eager loading for optimized relational queries.
+
 
 ---
 
@@ -185,9 +190,7 @@ Niraj Bajagain (https://github.com/NeeRaj556)
 ---
 
 ## Future Improvements
-
 -   Support for more complex query filters.
 -   Role and permission-based access.
 -   Additional pre-built components for common use cases.
 -   Enhanced relational data management to handle associations such as `hasMany`, `belongsTo`, and `many-to-many`. This will streamline building APIs for models with relational dependencies.
-

@@ -16,7 +16,6 @@ class CrudRepository extends BaseRepository implements CrudRepositoryInterface
       $query = $this->active($query, $active);
       $query = $this->verified($query, $verify);
 
-      
 
       $result = $paginated ? $query->paginate(env('PAGINATE')) : $query->get();
 
