@@ -18,7 +18,20 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('user');
+            $table->enum('role', ['doctor', 'admin', 'user'])->default('user');
+            $table->string('phone_number')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+
+            $table->string('speciality_id')->nullable();
+            $table->string('experience')->nullable();
+            $table->string('fee')->nullable();
+            $table->longText('bio')->nullable();
+
+            $table->integer('status')->default(1);
+
             $table->rememberToken();
             $table->timestamps();
         });

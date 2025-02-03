@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Admin\Doctor;
 
 use App\Http\Requests\BaseRequest;
-use App\Http\Requests\BaseRequestValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterValidation extends BaseRequest
+class StoreDoctorRequest extends BaseRequest
 {
+
     public function rules(): array
     {
         return [
@@ -21,6 +21,28 @@ class RegisterValidation extends BaseRequest
             'gender' => ['nullable', 'string', 'in:male,female,other'],
             'longitude' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'string', 'max:255'],
+
+            'speciality_id' => ['nullable', 'integer', 'exists:specialities,id'],
+            'experience' => ['nullable', 'string', 'max:255'],
+            'fee' => ['nullable', 'string', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:255'],
+            'availability' => ['required', 'array'],
+            'availability.*.date' => ['required', 'date'],
+            'availability.*.times' => ['required', 'array'],
+            'availability.*.times.*' => ['required', 'string'],
+
+
+            'status' => ['nullable'],
+
+
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'status' => $this->status ?? 0,
+            'role' =>  'doctor',
+        ]);
     }
 }

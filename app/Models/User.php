@@ -25,6 +25,18 @@ Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
+        'phone_number',
+        'date_of_birth',
+        'gender',
+        'longitude',
+        'latitude',
+        'profile_picture',
+        // Doctors Model
+        'speciality_id',
+        'experience',
+        'fee',
+        'bio',
+
     ];
 
     /**
@@ -56,6 +68,15 @@ Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [];
+        return ['role' => $this->role];
+    }
+
+    public function speciality()
+    {
+        return $this->belongsTo(Specality::class);
+    }
+    public function doctorAvailable()
+    {
+        return $this->hasMany(DoctorAvailable::class, 'doctor_id', 'id');
     }
 }

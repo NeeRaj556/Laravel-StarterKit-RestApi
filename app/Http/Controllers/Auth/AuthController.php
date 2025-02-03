@@ -6,15 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterValidation;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Repositories\CrudRepository;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
     protected $crudRepository;
+    protected $files = ['profile_picture'];
+
+    protected $folder = 'users';
 
     public function __construct(CrudRepository $crudRepository)
     {
@@ -25,30 +27,41 @@ class AuthController extends Controller
     public function register(RegisterValidation $request)
     {
         $data = $request->validated();
-        $user = $this->crudRepository->store(new User, $data, $request, null, null, null, ['password' => $data['password']]);
+        $data['role'] = 'user';
+        $this->crudRepository->store(new User, $data, $request, $this->folder, $this->files, [], ['password' => $data['password']]);
+        $user = User::where('email', $data['email'])->first();
 
-        $token = JWTAuth::fromUser($user);
-
+        $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
+        $user['profile_picture'] = $this->FilePath($this->folder, $user->id, $user->profile_picture);
         return response()->json(compact('user', 'token'), 201);
     }
 
     // User login
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
 
-            // Get the authenticated user.
             $user = auth()->user();
+            $token = JWTAuth::claims([
+                'role' => $user->role,
+                'email' => $user->email
+            ])->fromUser($user);
 
-            // (optional) Attach the role to the token.
-            $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
-
-            return response()->json(compact('token'));
+            return response()->json([
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role
+                ]
+            ]);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Could not create token'], 500);
         }
@@ -64,7 +77,7 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'Invalid token'], 400);
         }
-
+        $user['profile_picture'] = $this->ShowFileURl($this->files, 'users', $user->id, $user->toArray());
         return response()->json(compact('user'));
     }
 
@@ -75,4 +88,20 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Successfully logged out']);
     }
+    private function FilePath($folder, $id, $file)
+    {
+        return Storage::url($folder . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . $file);
+    }
+    private function ShowFileURl($files, $folder, $id, $query)
+    {
+
+        if (!empty($files) && !empty($folder)) {
+            foreach ($files as $key) {
+                $query[$key] = $query[$key] == null ? null : $this->FilePath($folder, $id, $query[$key] ?? null);
+            }
+        }
+        return $query;
+    }
+   
+
 }

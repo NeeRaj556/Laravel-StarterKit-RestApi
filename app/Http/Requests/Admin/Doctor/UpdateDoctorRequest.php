@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Admin\Doctor;
 
 use App\Http\Requests\BaseRequest;
-use App\Http\Requests\BaseRequestValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterValidation extends BaseRequest
+class UpdateDoctorRequest extends BaseRequest
 {
+
     public function rules(): array
     {
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -21,6 +22,23 @@ class RegisterValidation extends BaseRequest
             'gender' => ['nullable', 'string', 'in:male,female,other'],
             'longitude' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'string', 'max:255'],
+            'speciality_id' => ['nullable', 'integer', 'exists:specialities,id'],
+            'experience' => ['nullable', 'string', 'max:255'],
+            'fee' => ['nullable', 'string', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable'],
         ];
     }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+
+            'role' =>  'doctor',
+        ]);
+    }
+    // public function wantsJson()
+    // {
+    //     return $this->isJson() || $this->ajax() || $this->wantsJson();
+    // }
 }
